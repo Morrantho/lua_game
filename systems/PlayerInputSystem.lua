@@ -16,6 +16,7 @@ function PlayerInputSystem:Update(dt)
     for entity in pairs(self.entities) do
         local input = World.components[Input.id][entity]
         local motion = World.components[Motion.id][entity]
+        input.lastDirection = input.direction;
 
         if love.keyboard.isDown(Config.RIGHT) and not love.keyboard.isDown(Config.LEFT) then 
             input.direction = 1

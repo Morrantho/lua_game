@@ -9,7 +9,7 @@ setmetatable(Animation,{
         this.h = 32; -- The height of each sprite in SpriteSheet
         this.cropX = 0; -- The width of the crop region
         this.cropY = 0; -- The height of the crop region
-        this.delay = .125;
+        this.delay = .0625;
         this.time  = nil;
         this.xOff  = 0;
         this.yOff  = 0;

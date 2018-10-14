@@ -8,9 +8,9 @@ setmetatable(Motion,{
         this.velocity = Vector2(0,0)
         this.mass = 5
         this.jumpHeight=1.5
-        this.speed = 2
+        this.speed = 3
         this.friction = 4
-        this.maxSpeed = .5
+        this.maxSpeed = .3
         return this
     end
 })

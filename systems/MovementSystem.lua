@@ -15,7 +15,7 @@ function MovementSystem:Update(dt)
         local transform = World.components[Transform.id][entity]
         local motion = World.components[Motion.id][entity]
         local input  = World.components[Input.id][entity]
-        
+
         -- Moving Right 
         if input.direction == 1 then
             -- If you were moving left previously, slow them down

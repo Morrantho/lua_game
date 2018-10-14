@@ -22,17 +22,19 @@ function AnimationSystem:Update(dt)
         local anim      = World.components[Animation.id][k];
         local transform = World.components[Transform.id][k];
 
+        -- print("LAST: "..input.lastDirection,"CURRENT: "..input.direction);
+
         if input.direction == -1 then -- Left
-            self:Play(anim,0,7,1,1,0,0,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,input,0,7,1,1,transform.size.x,transform.size.y,anim.delay);
         elseif input.direction == 1 then -- Right
-            self:Play(anim,0,7,3,3,0,0,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,input,0,7,2,2,transform.size.x,transform.size.y,anim.delay);
         else -- Idle
-            self:Play(anim,0,0,0,0,0,0,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,input,0,0,0,0,transform.size.x,transform.size.y,anim.delay);
         end
     end
 end
 
-function AnimationSystem:Play(anim,sX,eX,sY,eY,xOff,yOff,w,h,delay)
+function AnimationSystem:Play(anim,input,sX,eX,sY,eY,w,h,delay)
     if not anim.curTime then anim.curTime = love.timer.getTime(); end
 
     if love.timer.getTime()-anim.curTime >= delay then
@@ -40,8 +42,6 @@ function AnimationSystem:Play(anim,sX,eX,sY,eY,xOff,yOff,w,h,delay)
         anim.w = w;
         anim.h = h;
         anim.delay = delay;
-        anim.xOff = xOff;
-        anim.yOff = yOff;
 
         if anim.x < eX then
             anim.x = anim.x+1;
@@ -55,10 +55,19 @@ function AnimationSystem:Play(anim,sX,eX,sY,eY,xOff,yOff,w,h,delay)
             anim.y = sY;
         end
 
-        anim.cropX = anim.x*anim.w+anim.xOff;
-        anim.cropY = anim.y*anim.h+anim.yOff;
+        anim.cropX = anim.x*anim.w;
+        anim.cropY = anim.y*anim.h;
 
-        print(anim.cropX,anim.cropY);
+        -- print("X:"..anim.x,"Y:"..anim.y,"CROP X:"..anim.cropX,"CROP Y:"..anim.cropY);
+    else
+        if input.direction ~= input.lastDirection then
+            anim.x = sX;
+            anim.y = sY;
+            anim.w = w;
+            anim.h = h;
+            anim.cropX = anim.x*anim.w;
+            anim.cropY = anim.y*anim.h;            
+        end        
     end
 end
 
