@@ -5,7 +5,8 @@ Config = {
     LEFT  = "a",
     RIGHT = "d",
     JUMP  = "space",
-    USE   = "e"
+    USE   = "e",
+    DEBUG = true,
 }
 
 return Config

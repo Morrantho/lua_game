@@ -2,6 +2,7 @@
 local Motion    = require("components/Motion")
 local Input     = require("components/Input")
 local World     = require("World")
+local Collider  = require("components/Collider");
 
 MovementSystem = require("systems/BaseSystem"):Register(
     bit.bor(Transform.id,Motion.id,Input.id)
@@ -15,6 +16,7 @@ function MovementSystem:Update(dt)
         local transform = World.components[Transform.id][entity]
         local motion = World.components[Motion.id][entity]
         local input  = World.components[Input.id][entity]
+        local coll = World.components[Collider.id][entity]
 
         -- Moving Right 
         if input.direction == 1 then
@@ -49,9 +51,11 @@ function MovementSystem:Update(dt)
                 motion.velocity.y = -motion.jumpHeight
             end
         end
-        
-        -- Fall / Gravity
-        motion.velocity.y = motion.velocity.y + motion.mass * dt
+
+        -- Fall / Gravity. If no Collision Component, you must be falling
+        if not coll or motion.velocity.y ~= 0 then
+            motion.velocity.y = motion.velocity.y + motion.mass * dt
+        end
     end
 end
 

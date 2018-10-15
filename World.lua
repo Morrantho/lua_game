@@ -67,6 +67,13 @@ function World:AddComponent(ent,componentType,...)
     end
 end
 
+-- Adds an animation sequence to an entities' animation table.
+-- seq[1]: startX, seq[2]: endX, seq[3]: startY, seq[4]: endY
+function World:AddSequence(ent,animType,seq)
+    local animation = World.components[Animation.id][ent];
+    animation[animType] = seq;
+end
+
 function World:RemoveComponent(ent,componentType)
     local mask = self.mask[ent]
 
@@ -83,6 +90,10 @@ end
 
 function World:GetComponent(ent,componentType)
     return self.components[componentType][ent]
+end
+
+function World:HasComponent(ent,componentType)
+    return self.components[componentType][ent] == true;
 end
 
 function World:Update(dt)

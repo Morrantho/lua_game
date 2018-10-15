@@ -47,7 +47,7 @@ function CollisionResolverSystem:Update(dt)
             if top == min then
                 aTransform.position.y = bTransform.position.y-aTransform.size.y
                 aMotion.velocity.y = 0
-                aInput.jump = false                
+                aInput.jump = false
             elseif bot == min then
                 aTransform.position.y = bTransform.position.y+bTransform.size.y
                 aMotion.velocity.y = aMotion.velocity.y+(.05+dt)

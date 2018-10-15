@@ -14,6 +14,7 @@ AnimationSystem = require("systems/BaseSystem"):Register(
 )
 
 function AnimationSystem:Init()
+
 end
 
 function AnimationSystem:Update(dt)
@@ -21,53 +22,40 @@ function AnimationSystem:Update(dt)
         local input     = World.components[Input.id][k];
         local anim      = World.components[Animation.id][k];
         local transform = World.components[Transform.id][k];
-
-        -- print("LAST: "..input.lastDirection,"CURRENT: "..input.direction);
+        local motion    = World.components[Motion.id][k];
+        local sheet     = World.components[SpriteSheet.id][k];
 
         if input.direction == -1 then -- Left
-            self:Play(anim,input,0,7,1,1,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,anim.left,true);
         elseif input.direction == 1 then -- Right
-            self:Play(anim,input,0,7,2,2,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,anim.right,true);
         else -- Idle
-            self:Play(anim,input,0,0,0,0,transform.size.x,transform.size.y,anim.delay);
+            self:Play(anim,anim.idle,true);
         end
     end
 end
 
-function AnimationSystem:Play(anim,input,sX,eX,sY,eY,w,h,delay)
-    if not anim.curTime then anim.curTime = love.timer.getTime(); end
+function AnimationSystem:Play(anim,seq,loop)
+    if not anim.time then anim.time = love.timer.getTime(); end
 
-    if love.timer.getTime()-anim.curTime >= delay then
-        anim.curTime = love.timer.getTime();
-        anim.w = w;
-        anim.h = h;
-        anim.delay = delay;
+    if love.timer.getTime()-anim.time >= anim.delay then
+        anim.time = love.timer.getTime();
 
-        if anim.x < eX then
+        if anim.x < seq[2] then -- 2 = endX 
             anim.x = anim.x+1;
         else
-            anim.x = sX;
+            if loop then
+                anim.x = seq[1]; -- Restart x sequence
+            end
         end
 
-        if anim.y < eY then
+        if anim.y < seq[4] then -- 4 = endY
             anim.y = anim.y+1;
         else
-            anim.y = sY;
-        end
-
-        anim.cropX = anim.x*anim.w;
-        anim.cropY = anim.y*anim.h;
-
-        -- print("X:"..anim.x,"Y:"..anim.y,"CROP X:"..anim.cropX,"CROP Y:"..anim.cropY);
-    else
-        if input.direction ~= input.lastDirection then
-            anim.x = sX;
-            anim.y = sY;
-            anim.w = w;
-            anim.h = h;
-            anim.cropX = anim.x*anim.w;
-            anim.cropY = anim.y*anim.h;            
-        end        
+            if loop then
+                anim.y = seq[3]; -- Restart y sequence.
+            end
+        end      
     end
 end
 
@@ -75,13 +63,22 @@ function AnimationSystem:Draw()
     for k,v in pairs(self.entities) do
         local input     = World.components[Input.id][k];
         local transform = World.components[Transform.id][k];
+        local sheet     = World.components[SpriteSheet.id][k];
         local anim      = World.components[Animation.id][k];
         local img       = World.components[SpriteSheet.id][k].img;
         local x,y       = transform.position.x,transform.position.y;
         local w,h       = img:getWidth(),img:getHeight();
+        local quad      = sheet.sprites[anim.y][anim.x];
 
-        local quad = love.graphics.newQuad(anim.cropX,anim.cropY,transform.size.x,transform.size.y,w,h)
-        love.graphics.draw(img,quad,x,y)
+        if input.direction == -1 or input.lastDirection == -1 then
+            love.graphics.draw(img,quad,x,y,0,-1,1,transform.size.x)            
+        else 
+            love.graphics.draw(img,quad,x,y)
+        end
+
+        -- if Config.DEBUG then
+        --     love.graphics.rectangle("line",x,y,anim.w,anim.h);
+        -- end
     end
 end
 

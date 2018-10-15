@@ -20,9 +20,13 @@ function RenderSystem:Draw()
         local w,h       = sprite:getWidth(),sprite:getHeight();
 
         if animation then return end -- Let the animation system take care of rendering this entity.
-        
+
         local quad = love.graphics.newQuad(0,0,transform.size.x,transform.size.y,w,h)
         love.graphics.draw(sprite,quad,x,y)
+
+        if Config.DEBUG then
+            love.graphics.rectangle("line",x,y,w,h);
+        end
     end 
 end
 
