@@ -23,6 +23,10 @@ function PlayerInputSystem:Update(dt)
         elseif love.keyboard.isDown(Config.LEFT) and not love.keyboard.isDown(Config.RIGHT) then
             input.direction = -1
         else
+            if input.direction ~= 0 then
+                input.lastXDirection = input.lastDirection;
+            end
+
             input.direction = 0
         end
         
@@ -40,6 +44,12 @@ function PlayerInputSystem:Update(dt)
             input.fire = true
         else
             input.fire = false
+        end
+
+        if love.keyboard.isDown(Config.CROUCH) then
+            input.crouch = true
+        else
+            input.crouch = false
         end
     end
 end

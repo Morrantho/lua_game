@@ -1,6 +1,6 @@
 SpriteSheet = require("components/Component"):Register()
 
-local function Parse(img,spritesX,spritesY,xOff,yOff)
+local function Parse(self,img,spritesX,spritesY,xOff,yOff)
     local sprites = {};
     local imgW,imgH = img:getWidth(),img:getHeight();
     local spriteW,spriteH = imgW/spritesX,imgH/spritesY;
@@ -9,6 +9,9 @@ local function Parse(img,spritesX,spritesY,xOff,yOff)
 
     spriteW = spriteW - xOff;
     spriteH = spriteH - yOff;
+
+    self.spriteW = spriteW;
+    self.spriteH = spriteH;
 
     local i,j = 0,0
     for y=0,spritesY*spriteH-spriteH,spriteH do
@@ -34,7 +37,7 @@ setmetatable(SpriteSheet,{
         local this   = {}
         this.src     = "res/images/"..src
         this.img     = love.graphics.newImage(this.src)
-        this.sprites = Parse(this.img,spritesX,spritesY,xOff,yOff);
+        this.sprites = Parse(this,this.img,spritesX,spritesY,xOff,yOff);
         return this
     end
 })

@@ -7,7 +7,7 @@ setmetatable(Animation,{
         this.time      = nil;
         this.x         = 0; -- x index of spritesheet.
         this.y         = 0; -- y index of spritesheet.
-        
+        this.frame     = 0;
         return this
     end
 })

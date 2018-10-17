@@ -7,6 +7,7 @@ Config = {
     JUMP  = "space",
     USE   = "e",
     DEBUG = true,
+    CROUCH = "s",
 }
 
 return Config

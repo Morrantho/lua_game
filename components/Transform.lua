@@ -7,6 +7,7 @@ setmetatable(Transform,{
         this.position = Vector2(x or 0,y or 0)
         this.size     = Vector2(w or 0,h or 0)
         this.lastPosition = this.position
+        this.ground = y;
         return this
     end
 })

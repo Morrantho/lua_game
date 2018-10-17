@@ -50,12 +50,19 @@ function MovementSystem:Update(dt)
             if motion.velocity.y == 0 then
                 motion.velocity.y = -motion.jumpHeight
             end
+
+            if coll then
+                input.jump = false
+            end
         end
 
-        -- Fall / Gravity. If no Collision Component, you must be falling
-        if not coll or motion.velocity.y ~= 0 then
-            motion.velocity.y = motion.velocity.y + motion.mass * dt
+        if motion.velocity.y > .2 then
+            input.fall = true
+        else
+            input.fall = false
         end
+
+        motion.velocity.y = motion.velocity.y + motion.mass * dt            
     end
 end
 

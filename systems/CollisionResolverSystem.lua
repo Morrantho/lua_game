@@ -35,9 +35,9 @@ function CollisionResolverSystem:Update(dt)
             local aX,aY,aW,aH = aTransform.position.x,aTransform.position.y,aTransform.size.x,aTransform.size.y
             local bX,bY,bW,bH = bTransform.position.x,bTransform.position.y,bTransform.size.x,bTransform.size.y
 
-            local top = aY+aH-bY
-            local bot = bY+bH-aY
-            local left = aX+aW-bX
+            local top   = aY+aH-bY
+            local bot   = bY+bH-aY
+            local left  = aX+aW-bX
             local right = bX+bW-aX
 
             local dirs = {top,bot,left,right}
@@ -47,7 +47,6 @@ function CollisionResolverSystem:Update(dt)
             if top == min then
                 aTransform.position.y = bTransform.position.y-aTransform.size.y
                 aMotion.velocity.y = 0
-                aInput.jump = false
             elseif bot == min then
                 aTransform.position.y = bTransform.position.y+bTransform.size.y
                 aMotion.velocity.y = aMotion.velocity.y+(.05+dt)
@@ -61,6 +60,8 @@ function CollisionResolverSystem:Update(dt)
 
             World:RemoveComponent(a,Collider.id)
             World:RemoveComponent(b,Collider.id)
+            World.components[Collider.id][a] = nil;                      
+            World.components[Collider.id][b] = nil;
         end
     end
 end

@@ -3,6 +3,7 @@ local Input       = require("components/Input")
 local Transform   = require("components/Transform");
 local Animation   = require("components/Animation");
 local Vector2     = require("vector/Vector2")
+local Collider    = require("components/Collider");
 
 AnimationSystem = require("systems/BaseSystem"):Register(
     bit.bor(
@@ -24,13 +25,22 @@ function AnimationSystem:Update(dt)
         local transform = World.components[Transform.id][k];
         local motion    = World.components[Motion.id][k];
         local sheet     = World.components[SpriteSheet.id][k];
+        local coll      = World.components[Collider.id][k];
 
-        if input.direction == -1 then -- Left
-            self:Play(anim,anim.left,true);
-        elseif input.direction == 1 then -- Right
-            self:Play(anim,anim.right,true);
+        if input.jump and not input.fall then
+            self:Play(anim,anim.jump,true);
+        elseif input.direction == -1 and not input.fall then -- Left
+            self:Play(anim,anim.run,true);
+        elseif input.direction == 1 and not input.fall then -- Right
+            self:Play(anim,anim.run,true);
+        elseif input.crouch and not input.fall then
+            self:Play(anim,anim.crouch,true);            
         else -- Idle
-            self:Play(anim,anim.idle,true);
+            if input.fall then
+                self:Play(anim,anim.fall,true);                
+            else
+                self:Play(anim,anim.idle,true);
+            end
         end
     end
 end
@@ -41,21 +51,16 @@ function AnimationSystem:Play(anim,seq,loop)
     if love.timer.getTime()-anim.time >= anim.delay then
         anim.time = love.timer.getTime();
 
-        if anim.x < seq[2] then -- 2 = endX 
-            anim.x = anim.x+1;
+        if anim.frame < #seq then
+            anim.frame = anim.frame+1
         else
             if loop then
-                anim.x = seq[1]; -- Restart x sequence
+                anim.frame = 1                
             end
         end
 
-        if anim.y < seq[4] then -- 4 = endY
-            anim.y = anim.y+1;
-        else
-            if loop then
-                anim.y = seq[3]; -- Restart y sequence.
-            end
-        end      
+        anim.x = seq[anim.frame][1]
+        anim.y = seq[anim.frame][2]     
     end
 end
 
@@ -70,15 +75,21 @@ function AnimationSystem:Draw()
         local w,h       = img:getWidth(),img:getHeight();
         local quad      = sheet.sprites[anim.y][anim.x];
 
-        if input.direction == -1 or input.lastDirection == -1 then
+        if input.direction == -1 or input.lastDirection == -1 then -- moving left
             love.graphics.draw(img,quad,x,y,0,-1,1,transform.size.x)            
-        else 
+        elseif input.direction == 1 or input.lastDirection == 1 then -- moving right
             love.graphics.draw(img,quad,x,y)
+        elseif input.lastXDirection == -1 then -- Idle and facing left
+            love.graphics.draw(img,quad,x,y,0,-1,1,transform.size.x)                    
+        elseif input.lastXDirection == 1 then -- Idle and facing right
+            love.graphics.draw(img,quad,x,y)
+        else -- Must be idling without having pressed anything yet.
+            love.graphics.draw(img,quad,x,y)            
         end
-
-        -- if Config.DEBUG then
-        --     love.graphics.rectangle("line",x,y,anim.w,anim.h);
-        -- end
+        
+        if Config.DEBUG then
+            love.graphics.rectangle("line",x,y,sheet.spriteW,sheet.spriteH);
+        end
     end
 end
 
