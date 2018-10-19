@@ -3,6 +3,9 @@ local Motion    = require("components/Motion")
 local Input     = require("components/Input")
 local World     = require("World")
 local Collider  = require("components/Collider");
+local Crouch    = require("components/Crouch");
+local SpriteSheet = require("components/SpriteSheet");
+local Vector2     = require("vector/Vector2");
 
 MovementSystem = require("systems/BaseSystem"):Register(
     bit.bor(Transform.id,Motion.id,Input.id)
@@ -16,7 +19,8 @@ function MovementSystem:Update(dt)
         local transform = World.components[Transform.id][entity]
         local motion = World.components[Motion.id][entity]
         local input  = World.components[Input.id][entity]
-        local coll = World.components[Collider.id][entity]
+        local sheet= World.components[SpriteSheet.id][entity];
+        local crouch = World.components[Crouch.id][entity];
 
         -- Moving Right 
         if input.direction == 1 then
@@ -46,13 +50,9 @@ function MovementSystem:Update(dt)
         end
 
         -- Jump
-        if input.jump then
+        if input.jump then   
             if motion.velocity.y == 0 then
                 motion.velocity.y = -motion.jumpHeight
-            end
-
-            if coll then
-                input.jump = false
             end
         end
 
@@ -60,6 +60,17 @@ function MovementSystem:Update(dt)
             input.fall = true
         else
             input.fall = false
+        end
+
+        if crouch then
+            if not crouch.standingHeight then crouch.standingHeight = transform.size.y; end
+            if not crouch.crouchHeight then crouch.crouchHeight = transform.size.y/2; end
+
+            if input.crouch and input.direction == 0 then
+                transform.size.y = crouch.crouchHeight;
+            else
+                transform.size.y = crouch.standingHeight;
+            end
         end
 
         motion.velocity.y = motion.velocity.y + motion.mass * dt            

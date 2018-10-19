@@ -6,8 +6,10 @@ Config = {
     RIGHT = "d",
     JUMP  = "space",
     USE   = "e",
-    DEBUG = true,
+    DEBUG = false,
     CROUCH = "s",
+    XSCALE = 1,
+    YSCALE = 1
 }
 
 return Config

@@ -12,6 +12,8 @@ local function Parse(self,img,spritesX,spritesY,xOff,yOff)
 
     self.spriteW = spriteW;
     self.spriteH = spriteH;
+    self.xOffset = xOff;
+    self.yOffset = yOff;
 
     local i,j = 0,0
     for y=0,spritesY*spriteH-spriteH,spriteH do

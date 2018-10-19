@@ -32,6 +32,8 @@ function PlayerInputSystem:Update(dt)
         
         if love.keyboard.isDown(Config.JUMP) then
             input.jump = true
+        else
+            input.jump = false
         end
 
         if love.keyboard.isDown(Config.USE) then
@@ -50,6 +52,14 @@ function PlayerInputSystem:Update(dt)
             input.crouch = true
         else
             input.crouch = false
+        end
+
+        if love.keyboard.isDown("9") then
+            Config.XSCALE = Config.XSCALE + .01 
+            Config.YSCALE = Config.YSCALE + .01
+        elseif love.keyboard.isDown("0") then
+            Config.XSCALE = Config.XSCALE - .01
+            Config.YSCALE = Config.YSCALE - .01           
         end
     end
 end

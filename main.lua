@@ -21,7 +21,7 @@ function love.load()
     -- PLAYER
     local player = World:CreateEntity()
     World:AddComponent(player,SpriteSheet.id,"player.png",7,16,5,0)
-    World:AddComponent(player,Transform.id,128,128,50,37)
+    World:AddComponent(player,Transform.id,128,128,24,37)
     World:AddComponent(player,Animation.id,.125)
     
     World:AddSequence(player,"run",{ {1,1},{2,1},{3,1},{4,1},{5,1},{6,1} });
@@ -34,9 +34,12 @@ function love.load()
     World:AddComponent(player,Player.id)
     World:AddComponent(player,Input.id)
     World:AddComponent(player,CanCollide.id)
+    World:AddComponent(player,Crouch.id)
+    World:AddComponent(player,Camera.id)
     -- PLAYER
 
-    love.window.setMode(1024,768)
+    love.window.setFullscreen(true)
+    -- love.window.setMode(1024,768)
 end
 
 function love.update(dt)

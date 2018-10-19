@@ -39,9 +39,9 @@ function CollisionResolverSystem:Update(dt)
             local bot   = bY+bH-aY
             local left  = aX+aW-bX
             local right = bX+bW-aX
-
             local dirs = {top,bot,left,right}
             local min = top
+
             for a,b in pairs(dirs) do if min > b then min = b end end
             -- Find the smallest overlap and push back in that direction
             if top == min then
@@ -60,8 +60,8 @@ function CollisionResolverSystem:Update(dt)
 
             World:RemoveComponent(a,Collider.id)
             World:RemoveComponent(b,Collider.id)
-            World.components[Collider.id][a] = nil;                      
-            World.components[Collider.id][b] = nil;
+            -- World.components[Collider.id][a] = nil;                      
+            -- World.components[Collider.id][b] = nil;
         end
     end
 end
